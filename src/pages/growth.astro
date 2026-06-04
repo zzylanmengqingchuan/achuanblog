@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "../layouts/PageLayout.astro";
+import GrowthTimelineItem from "../components/content/GrowthTimelineItem.astro";
+
+const items = (await getCollection("growth")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<PageLayout
+  title="成长路径"
+  eyebrow="Growth"
+  description="一些真正改变我的节点：写作、AI、工具、比赛，以及不断看到正反馈的过程。"
+>
+  <section class="container growth">
+    {items.map((item) => <GrowthTimelineItem item={item} />)}
+  </section>
+</PageLayout>
+
+<style>
+  .growth {
+    max-width: var(--layout-wide-max);
+    padding: 0 0 96px;
+  }
+</style>

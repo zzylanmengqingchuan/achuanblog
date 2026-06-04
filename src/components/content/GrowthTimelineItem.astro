@@ -1,0 +1,68 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Tag from "../base/Tag.astro";
+
+interface Props {
+  item: CollectionEntry<"growth">;
+}
+
+const { item } = Astro.props;
+---
+
+<article class="growth-item">
+  <div class="dot" aria-hidden="true"></div>
+  <div>
+    <p class="period">{item.data.period}</p>
+    <h3>{item.data.title}</h3>
+    <p>{item.data.summary}</p>
+    <Tag>{item.data.theme}</Tag>
+  </div>
+</article>
+
+<style>
+  .growth-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 18px;
+    padding: 0 0 34px;
+  }
+
+  .growth-item::before {
+    position: absolute;
+    top: 16px;
+    bottom: 0;
+    left: 5px;
+    width: 1px;
+    background: var(--color-border-subtle);
+    content: "";
+  }
+
+  .dot {
+    position: relative;
+    z-index: 1;
+    width: 11px;
+    height: 11px;
+    margin-top: 8px;
+    border-radius: 50%;
+    background: var(--color-primary);
+  }
+
+  .period {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 14px;
+  }
+
+  h3 {
+    margin: 6px 0 0;
+    color: var(--color-neutral-strong);
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  p:not(.period) {
+    margin: 10px 0 14px;
+    line-height: 1.7;
+  }
+</style>

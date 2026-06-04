@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "../layouts/PageLayout.astro";
+import ExperienceItem from "../components/content/ExperienceItem.astro";
+
+const items = (await getCollection("experience")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<PageLayout
+  title="学习经历"
+  eyebrow="Experience"
+  description="从小镇小学到大学校园，一段段经历构成了我今天看世界的方式。"
+>
+  <section class="container list">
+    {items.map((item) => <ExperienceItem item={item} />)}
+  </section>
+</PageLayout>
+
+<style>
+  .list {
+    display: grid;
+    gap: 16px;
+    padding: 0 0 96px;
+  }
+</style>

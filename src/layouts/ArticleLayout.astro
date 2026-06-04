@@ -1,0 +1,74 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Tag from "../components/base/Tag.astro";
+import { formatDate } from "../utils/date";
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  category: string;
+  tags: string[];
+}
+---
+
+<BaseLayout title={Astro.props.title} description={Astro.props.description}>
+  <article class="content-container article">
+    <a class="back" href="/articles">返回文章</a>
+    <header>
+      <p class="meta">{Astro.props.category} · {formatDate(Astro.props.date)}</p>
+      <h1>{Astro.props.title}</h1>
+      <p class="description">{Astro.props.description}</p>
+      <div class="tags">
+        {Astro.props.tags.map((tag) => <Tag>{tag}</Tag>)}
+      </div>
+    </header>
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    padding: 64px 0 96px;
+  }
+
+  .back {
+    color: var(--color-secondary);
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  header {
+    padding: 32px 0 36px;
+  }
+
+  .meta {
+    margin: 0 0 12px;
+    color: var(--color-neutral-muted);
+    font-size: 14px;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--color-neutral-strong);
+    font-size: clamp(32px, 6vw, 48px);
+    font-weight: 400;
+    line-height: 1.16;
+  }
+
+  .description {
+    margin: 20px 0 0;
+    color: var(--color-neutral);
+    font-size: 19px;
+    line-height: 1.7;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+  }
+</style>

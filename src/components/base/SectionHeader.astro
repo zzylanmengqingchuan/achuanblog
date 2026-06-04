@@ -1,0 +1,33 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+---
+
+<div class="section-header">
+  <h2>{Astro.props.title}</h2>
+  {Astro.props.description && <p>{Astro.props.description}</p>}
+</div>
+
+<style>
+  .section-header {
+    margin-bottom: 28px;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--color-neutral-strong);
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  p {
+    max-width: 680px;
+    margin: 12px 0 0;
+    color: var(--color-neutral-muted);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+</style>

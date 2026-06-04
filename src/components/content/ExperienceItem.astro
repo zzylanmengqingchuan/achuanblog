@@ -1,0 +1,60 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Card from "../base/Card.astro";
+
+interface Props {
+  item: CollectionEntry<"experience">;
+}
+
+const { item } = Astro.props;
+---
+
+<Card>
+  <article class="item">
+    <p class="period">{item.data.period}</p>
+    <div>
+      <h3>{item.data.title}</h3>
+      <p class="institution">{item.data.institution}{item.data.location ? ` · ${item.data.location}` : ""}</p>
+      <p>{item.data.description}</p>
+    </div>
+  </article>
+</Card>
+
+<style>
+  .item {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 24px;
+  }
+
+  .period {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 14px;
+  }
+
+  h3 {
+    margin: 0;
+    color: var(--color-neutral-strong);
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  .institution {
+    margin: 8px 0 0;
+    color: var(--color-neutral-muted);
+    font-size: 14px;
+  }
+
+  p:last-child {
+    margin: 12px 0 0;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 680px) {
+    .item {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+</style>

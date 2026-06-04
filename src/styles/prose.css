@@ -1,0 +1,53 @@
+.prose {
+  color: var(--color-neutral);
+  font-size: 17px;
+  line-height: 1.85;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  color: var(--color-neutral-strong);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.prose h2 {
+  margin-top: 44px;
+  font-size: 26px;
+}
+
+.prose h3 {
+  margin-top: 32px;
+  font-size: 22px;
+}
+
+.prose p {
+  margin: 18px 0;
+}
+
+.prose a {
+  color: var(--color-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose blockquote {
+  margin: 28px 0;
+  padding: 18px 22px;
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-neutral-strong);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4rem;
+}
+
+.prose code {
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  padding: 2px 5px;
+  font-size: 0.9em;
+}

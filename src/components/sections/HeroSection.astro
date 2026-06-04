@@ -1,0 +1,97 @@
+---
+import Button from "../base/Button.astro";
+import { site } from "../../data/site";
+---
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="copy">
+      <p class="eyebrow">个人博客 · Agent 学习 · 内容创作</p>
+      <h1>{site.name}</h1>
+      <p class="lead">
+        我是{site.author}，一名{site.role}。
+      </p>
+      <div class="actions">
+        <Button href="/about">了解我</Button>
+        <Button href="/works" variant="secondary">查看作品</Button>
+      </div>
+    </div>
+    <div class="portrait" aria-label="阿川 Blog 站点标识">
+      <img src={site.logo} alt="阿川 Blog logo" />
+      <p>持续学习的内容创作者。</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 76px 0 92px;
+  }
+
+  .hero-grid {
+    display: grid;
+    align-items: center;
+    grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+    gap: 56px;
+  }
+
+  .eyebrow {
+    margin: 0 0 18px;
+    color: var(--color-primary);
+    font-size: 15px;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--color-neutral-strong);
+    font-size: clamp(48px, 10vw, 92px);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+
+  .lead {
+    max-width: 720px;
+    margin: 26px 0 0;
+    color: var(--color-neutral);
+    font-size: 22px;
+    line-height: 1.65;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .portrait {
+    border: 1px solid rgba(66, 88, 255, 0.14);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.62);
+    padding: 24px;
+  }
+
+  .portrait img {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .portrait p {
+    margin: 18px 0 0;
+    color: var(--color-neutral);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 820px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .portrait {
+      max-width: 360px;
+    }
+  }
+</style>

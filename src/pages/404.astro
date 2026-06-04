@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/base/Button.astro";
+---
+
+<BaseLayout title="页面不存在" description="这个页面暂时不存在。">
+  <section class="content-container missing">
+    <p class="eyebrow">404</p>
+    <h1>这个页面暂时不存在</h1>
+    <p>也许它还在成长路径上。你可以回到首页，或者继续阅读文章。</p>
+    <div>
+      <Button href="/">回到首页</Button>
+      <Button href="/articles" variant="secondary">查看文章</Button>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .missing {
+    padding: 96px 0 140px;
+  }
+
+  .eyebrow {
+    color: var(--color-primary);
+  }
+
+  h1 {
+    color: var(--color-neutral-strong);
+    font-size: 44px;
+    font-weight: 400;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  div {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+  }
+</style>

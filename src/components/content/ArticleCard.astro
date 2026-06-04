@@ -1,0 +1,52 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Card from "../base/Card.astro";
+import Tag from "../base/Tag.astro";
+import { formatDate } from "../../utils/date";
+
+interface Props {
+  article: CollectionEntry<"articles">;
+}
+
+const { article } = Astro.props;
+---
+
+<Card href={`/articles/${article.slug}`}>
+  <article>
+    <p class="meta">{article.data.category} · {formatDate(article.data.date)}</p>
+    <h3>{article.data.title}</h3>
+    <p class="description">{article.data.description}</p>
+    <div class="tags">
+      {article.data.tags.slice(0, 3).map((tag) => <Tag>{tag}</Tag>)}
+    </div>
+  </article>
+</Card>
+
+<style>
+  .meta {
+    margin: 0 0 10px;
+    color: var(--color-neutral-muted);
+    font-size: 14px;
+  }
+
+  h3 {
+    margin: 0;
+    color: var(--color-neutral-strong);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.35;
+  }
+
+  .description {
+    margin: 12px 0 0;
+    color: var(--color-neutral);
+    line-height: 1.7;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+</style>

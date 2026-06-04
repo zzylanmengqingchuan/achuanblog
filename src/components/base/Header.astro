@@ -1,0 +1,98 @@
+---
+import { navigation } from "../../data/navigation";
+import { site } from "../../data/site";
+
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/">
+      <img src={site.logo} alt="" />
+      <span>{site.name}</span>
+    </a>
+    <nav aria-label="主导航">
+      {navigation.map((item) => {
+        const active = item.href === "/" ? path === "/" : path.startsWith(item.href);
+        return <a class:list={{ active }} href={item.href}>{item.label}</a>;
+      })}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-border-subtle);
+    background: rgba(13, 17, 23, 0.88);
+    backdrop-filter: blur(14px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 64px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-neutral-strong);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .brand img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .brand span {
+    font-size: 16px;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 2px;
+  }
+
+  nav a {
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    color: var(--color-neutral-muted);
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  nav a:hover {
+    color: var(--color-neutral);
+    background: var(--color-surface);
+  }
+
+  nav a.active {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+  }
+
+  @media (max-width: 760px) {
+    .header-inner {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 14px 0;
+    }
+
+    nav {
+      justify-content: flex-start;
+    }
+  }
+</style>

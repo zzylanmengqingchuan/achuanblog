@@ -1,0 +1,95 @@
+---
+import Card from "../base/Card.astro";
+import Tag from "../base/Tag.astro";
+import SectionHeader from "../base/SectionHeader.astro";
+import { recommendedTools } from "../../data/tools";
+---
+
+<section class="container tools-section">
+  <SectionHeader
+    title="推荐工具"
+    description="我最近常用，也确实愿意推荐的一些工具。"
+  />
+  <div class="tools-grid">
+    {
+      recommendedTools.map((tool) => (
+        <Card>
+          <article>
+            <div class="tool-head">
+              <h3>{tool.name}</h3>
+              <Tag>{tool.type}</Tag>
+            </div>
+            <p>{tool.description}</p>
+            {tool.note && <p class="note">{tool.note}</p>}
+            {tool.links.length > 0 && (
+              <div class="links">
+                {tool.links.map((link) => (
+                  <a href={link.href}>{link.label}</a>
+                ))}
+              </div>
+            )}
+          </article>
+        </Card>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .tools-section {
+    padding: 0 0 96px;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .tool-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  h3 {
+    margin: 0;
+    color: var(--color-neutral-strong);
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  p {
+    margin: 14px 0 0;
+    line-height: 1.7;
+  }
+
+  .note {
+    color: var(--color-primary);
+    font-size: 14px;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  a {
+    color: var(--color-secondary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 980px) {
+    .tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

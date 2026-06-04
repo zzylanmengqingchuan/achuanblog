@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "../layouts/PageLayout.astro";
+import WorkCard from "../components/content/WorkCard.astro";
+import ToolsSection from "../components/sections/ToolsSection.astro";
+
+const works = (await getCollection("works")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<PageLayout
+  title="作品集"
+  eyebrow="Works"
+  description="一些正在积累的开源项目、小工具和文章作品。"
+>
+  <section class="container grid">
+    {works.map((work) => <WorkCard work={work} />)}
+  </section>
+  <ToolsSection />
+</PageLayout>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    padding: 0 0 96px;
+  }
+
+  @media (max-width: 920px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

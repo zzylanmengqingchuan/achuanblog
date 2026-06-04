@@ -1,0 +1,71 @@
+---
+import Card from "../base/Card.astro";
+import { socialLinks } from "../../data/social";
+
+const enabled = socialLinks.filter((item) => item.enabled);
+---
+
+<section class="container contact-section">
+  <div class="contact-list">
+    {
+      enabled.map((item) => (
+        <Card>
+          <article class="contact-item">
+            <p class="contact-label">{item.label}</p>
+            {
+              item.href ? (
+                <a class="contact-value" href={item.href}>{item.value}</a>
+              ) : (
+                <p class="contact-value">{item.value}</p>
+              )
+            }
+          </article>
+        </Card>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .contact-section {
+    padding: 0 0 96px;
+  }
+
+  .contact-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .contact-item {
+    min-height: 86px;
+  }
+
+  .contact-label {
+    margin: 0;
+    color: var(--color-neutral-muted);
+    font-size: 14px;
+  }
+
+  .contact-value {
+    display: block;
+    margin: 8px 0 0;
+    color: var(--color-neutral-strong);
+    font-size: 19px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    text-decoration: none;
+  }
+
+  a.contact-value:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 720px) {
+    .contact-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

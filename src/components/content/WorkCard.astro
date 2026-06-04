@@ -1,0 +1,49 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Card from "../base/Card.astro";
+import Tag from "../base/Tag.astro";
+
+interface Props {
+  work: CollectionEntry<"works">;
+}
+
+const { work } = Astro.props;
+---
+
+<Card href={work.data.url ?? work.data.repo}>
+  <article>
+    <p class="type">{work.data.type}</p>
+    <h3>{work.data.title}</h3>
+    <p>{work.data.description}</p>
+    <div class="tags">
+      {work.data.tags.map((tag) => <Tag>{tag}</Tag>)}
+    </div>
+  </article>
+</Card>
+
+<style>
+  .type {
+    margin: 0 0 10px;
+    color: var(--color-primary);
+    font-size: 14px;
+  }
+
+  h3 {
+    margin: 0;
+    color: var(--color-neutral-strong);
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  p {
+    margin: 12px 0 0;
+    line-height: 1.7;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+</style>
