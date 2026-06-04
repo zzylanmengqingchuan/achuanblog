@@ -39,9 +39,11 @@ const navTags = [
     <!-- Profile Card -->
     <div class="profile-card anim-card-1">
       <div class="profile-top">
-        <p class="greeting">Hi, 我是</p>
-        <h1 class="name">阑梦清川</h1>
-        <p class="role">AI Agent 深度用户 · 内容创作者</p>
+        <p class="greeting"><span id="tw-greeting"></span></p>
+        <h1 class="name"><span id="tw-name" class="name-text"></span></h1>
+        <p class="role">
+          <span id="tw-role"></span><span class="cursor" id="tw-cursor" aria-hidden="true">|</span>
+        </p>
       </div>
 
       <div class="quick-nav">
@@ -112,6 +114,56 @@ const navTags = [
   </div>
 </BaseLayout>
 
+<script>
+  function typeInto(el: HTMLElement, text: string, speed: number): Promise<void> {
+    return new Promise(resolve => {
+      let i = 0;
+      el.textContent = '';
+      function tick() {
+        if (i < text.length) {
+          el.textContent += text[i++];
+          setTimeout(tick, speed);
+        } else {
+          resolve();
+        }
+      }
+      tick();
+    });
+  }
+
+  function delay(ms: number): Promise<void> {
+    return new Promise(r => setTimeout(r, ms));
+  }
+
+  async function runTypewriter() {
+    const greeting = document.getElementById('tw-greeting');
+    const name    = document.getElementById('tw-name');
+    const role    = document.getElementById('tw-role');
+    const cursor  = document.getElementById('tw-cursor');
+    if (!greeting || !name || !role || !cursor) return;
+
+    await delay(400);
+
+    // 1. Hi, 我是
+    await typeInto(greeting, 'Hi, 我是', 90);
+    await delay(180);
+
+    // 2. 阑梦清川
+    await typeInto(name, '阑梦清川', 110);
+    await delay(300);
+
+    // 3. 角色文字
+    await typeInto(role, 'AI Agent 深度用户 · 内容创作者', 55);
+    await delay(600);
+
+    // 打完后光标停止闪烁，淡出
+    cursor.style.transition = 'opacity 0.6s';
+    cursor.style.opacity = '0';
+  }
+
+  runTypewriter();
+</script>
+
 <style>
   /* ── Background orbs ── */
   .bg-orbs {
@@ -126,8 +178,12 @@ const navTags = [
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.18;
+    opacity: 0.12;
     animation: orbFloat linear infinite;
+  }
+
+  [data-theme="light"] .orb {
+    opacity: 0.06;
   }
 
   .orb-1 {
@@ -222,7 +278,7 @@ const navTags = [
     height: 84px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255,255,255,0.12);
+    border: 2px solid var(--color-border-strong);
     position: relative;
     z-index: 1;
     animation: avatarFloat 4s ease-in-out infinite;
@@ -253,18 +309,28 @@ const navTags = [
   /* ── Profile Card ── */
   .profile-card {
     width: 100%;
-    background: rgba(22, 27, 34, 0.72);
+    background: var(--color-surface);
     border: 1px solid var(--color-border-subtle);
     border-radius: 20px;
     padding: 28px 28px 24px;
     backdrop-filter: blur(20px);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+    box-shadow: var(--shadow-card);
     transition: box-shadow 0.3s, border-color 0.3s;
   }
 
   .profile-card:hover {
-    border-color: rgba(66, 88, 255, 0.3);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(66,88,255,0.12), inset 0 1px 0 rgba(255,255,255,0.06);
+    border-color: rgba(100,117,255,0.3);
+    box-shadow: var(--shadow-card), 0 0 0 1px rgba(100,117,255,0.12), 0 0 32px rgba(100,117,255,0.06);
+  }
+
+  /* 卡片呼吸光晕 */
+  @keyframes cardBreath {
+    0%, 100% { box-shadow: var(--shadow-card); }
+    50%       { box-shadow: var(--shadow-card), 0 0 24px rgba(100,117,255,0.08); }
+  }
+
+  .profile-card {
+    animation: cardBreath 4s ease-in-out infinite;
   }
 
   .greeting {
@@ -273,21 +339,54 @@ const navTags = [
     font-size: 15px;
   }
 
+  .greeting-text {
+    display: inline-block;
+  }
+
   .name {
-    margin: 0 0 8px;
-    background: linear-gradient(135deg, #6475ff, #a78bfa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    margin: 0 0 10px;
     font-size: 34px;
     font-weight: 700;
     letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .name-text {
+    background: linear-gradient(90deg, #6475ff, #a78bfa, #60a5fa, #6475ff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s linear infinite;
+  }
+
+  @keyframes gradientShift {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
   }
 
   .role {
     margin: 0;
     color: var(--color-neutral-muted);
     font-size: 15px;
+    min-height: 1.5em;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+  }
+
+  /* 打字机光标 */
+  .cursor {
+    display: inline-block;
+    color: var(--color-primary);
+    font-weight: 300;
+    animation: blink 0.9s step-end infinite;
+    margin-left: 1px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
   }
 
   /* ── Quick Nav Tags ── */
@@ -367,18 +466,17 @@ const navTags = [
   }
 
   .info-card {
-    background: rgba(22, 27, 34, 0.72);
+    background: var(--color-surface);
     border: 1px solid var(--color-border-subtle);
     border-radius: 20px;
     padding: 20px;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+    box-shadow: var(--shadow-card);
     transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
   }
 
   .info-card:hover {
-    border-color: rgba(66, 88, 255, 0.24);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(66,88,255,0.08);
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-card), 0 0 0 1px rgba(100,117,255,0.08);
     transform: translateY(-3px);
   }
 

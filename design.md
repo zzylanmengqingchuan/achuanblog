@@ -554,6 +554,32 @@ AI 开发时必须遵守以下约束：
 - 不让装饰性插图、图标或背景压过文字内容。
 - 不把链接全部做成按钮，只有真正重要的操作才使用按钮样式。
 
+# Implementation Notes
+
+## Astro Scoped CSS 与客户端动态渲染
+
+**问题描述**：Astro 的 `<style>` 默认是 scoped（作用域样式），会给元素加上 `data-astro-cid-xxx` 属性，CSS 选择器也会带上对应的 attribute selector。当通过 JavaScript `innerHTML` 动态注入 HTML 时，新元素没有这个属性，导致所有 scoped 样式失效，页面布局崩溃。
+
+**典型场景**：文章列表分页。第1页由服务端渲染，样式正常；第2页及以后通过 JS 动态替换 `innerHTML`，如果使用 scoped style 则样式全部丢失。
+
+**正确做法**：凡是需要动态注入的元素的样式，必须使用 `<style is:global>` 声明为全局样式，确保动态渲染的元素也能匹配到 CSS 规则。静态部分的页面级样式（如 `.page-head`、`.pager`）可以继续用普通 scoped style。
+
+**禁止做法**：不要对需要动态渲染的组件类使用 scoped style，否则翻页后样式会完全失效。
+
+---
+
+## 分页组件设计规范
+
+参考设计：`< 1 2 3 >` 居中排列，简洁、克制。
+
+- 上一页 / 下一页：34×34px 圆形按钮，border + 箭头图标，禁用时 opacity 0.3
+- 页码按钮：34×34px 圆形，无边框，active 状态填充 primary 色背景
+- 整体居中，gap 6px，padding-bottom 80px
+- 不使用省略号（`...`）分页，文章数量少时全部显示页码即可
+- 不做复杂的跳页输入框
+
+---
+
 # Open Questions
 
 以下内容尚未在当前文件夹中确认，后续需要由用户补充后再进入设计或开发：
