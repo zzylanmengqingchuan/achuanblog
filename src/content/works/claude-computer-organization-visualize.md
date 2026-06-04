@@ -6,6 +6,7 @@ date: 2026-05-29
 tags: ["Claude", "Skill", "计算机组成原理", "可视化"]
 repo: "https://github.com/zzylanmengqingchuan/claude-computer-organization-visualize"
 featured: true
+cover: "/covers/26.png"
 ---
 
 用于辅助理解计算机组成原理相关知识点。

@@ -5,6 +5,7 @@ summary: "从 DeepSeek、Trae、CodeBuddy、Claude Code 到 Codex，持续体验
 theme: "AI"
 order: 3
 featured: true
+cover: "/covers/18.png"
 ---
 
 AI Agent 不只是工具列表，而是一种新的工作方式。阿川 Blog 会持续记录这些工具如何改变学习、编程和内容创作。

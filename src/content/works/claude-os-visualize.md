@@ -6,6 +6,7 @@ date: 2026-05-29
 tags: ["Claude", "Skill", "操作系统", "可视化"]
 repo: "https://github.com/zzylanmengqingchuan/claude-os-visualize"
 featured: true
+cover: "/covers/29.png"
 ---
 
 用于把操作系统相关概念转化成更容易理解的可视化页面。

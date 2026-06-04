@@ -1,25 +1,293 @@
 ---
 import { getCollection } from "astro:content";
-import PageLayout from "../layouts/PageLayout.astro";
-import ExperienceItem from "../components/content/ExperienceItem.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 const items = (await getCollection("experience")).sort((a, b) => a.data.order - b.data.order);
+
+const typeColor: Record<string, string> = {
+  "教育经历": "#6475ff",
+  "工作经历": "#34d399",
+  "其他":     "#f59e0b",
+};
 ---
 
-<PageLayout
-  title="学习经历"
-  eyebrow="Experience"
-  description="从小镇小学到大学校园，一段段经历构成了我今天看世界的方式。"
->
-  <section class="container list">
-    {items.map((item) => <ExperienceItem item={item} />)}
-  </section>
-</PageLayout>
+<BaseLayout title="学习经历" description="从小镇小学到大学校园，一段段经历构成了我今天看世界的方式。">
+
+  <div class="page-head container">
+    <p class="eyebrow">Experience</p>
+    <h1>学习经历</h1>
+    <p class="sub">从小镇小学到大学校园，一段段经历构成了我今天看世界的方式。</p>
+  </div>
+
+  <div class="timeline-wrap container">
+    <div class="timeline-line" aria-hidden="true"></div>
+
+    {items.map((item, i) => {
+      const isEven = i % 2 === 1;
+      const color = typeColor[item.data.type] ?? typeColor["其他"];
+      return (
+        <div class:list={["timeline-item", { even: isEven }]}>
+
+          <div class="item-text">
+            <span class="item-period">{item.data.period}</span>
+            {item.data.location && <span class="item-location">📍 {item.data.location}</span>}
+            <h2 class="item-title">{item.data.title}</h2>
+            <p class="item-desc">{item.data.description}</p>
+            {item.data.links?.length > 0 && (
+              <div class="item-links">
+                {item.data.links.map(l => (
+                  <a href={l.url} target="_blank" rel="noopener" class="item-link">{l.label} →</a>
+                ))}
+              </div>
+            )}
+            <span class="item-type" style={`color:${color};border-color:${color}30;background:${color}10`}>
+              {item.data.type}
+            </span>
+          </div>
+
+          <div class="item-dot-wrap">
+            <div class="item-dot" style={`background:${color};box-shadow:0 0 0 4px ${color}20`}></div>
+          </div>
+
+          <div class="item-image">
+            {item.data.cover
+              ? <img src={item.data.cover} alt={item.data.title} loading="lazy" />
+              : <div class="img-placeholder" style={`background:linear-gradient(135deg,${color}18,${color}06)`}>
+                  <span style={`color:${color};opacity:0.4`}>{item.data.type}</span>
+                </div>
+            }
+          </div>
+
+        </div>
+      );
+    })}
+  </div>
+
+</BaseLayout>
 
 <style>
-  .list {
+  .page-head {
+    padding: 64px 0 56px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: var(--color-primary);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0 0 14px;
+    color: var(--color-neutral-strong);
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+
+  .sub {
+    margin: 0 auto;
+    color: var(--color-neutral-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  .timeline-wrap {
+    position: relative;
+    max-width: 900px;
+    padding-bottom: 96px;
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-border-strong);
+    transform: translateX(-50%);
+  }
+
+  .timeline-item {
     display: grid;
-    gap: 16px;
-    padding: 0 0 96px;
+    grid-template-columns: 1fr 48px 1fr;
+    align-items: center;
+    margin-bottom: 80px;
+    position: relative;
+  }
+
+  .timeline-item.even .item-text     { order: 3; text-align: left; }
+  .timeline-item.even .item-dot-wrap { order: 2; }
+  .timeline-item.even .item-image    { order: 1; }
+
+  /* ── Text ── */
+  .item-text {
+    padding: 0 32px 0 0;
+    text-align: right;
+    animation: slideLeft 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .timeline-item.even .item-text {
+    padding: 0 0 0 32px;
+    animation: slideRight 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  @keyframes slideLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .item-period {
+    display: block;
+    font-size: 13px;
+    color: var(--color-neutral-muted);
+    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  .item-location {
+    display: block;
+    font-size: 12px;
+    color: var(--color-neutral-muted);
+    margin-bottom: 10px;
+    opacity: 0.7;
+  }
+
+  .item-title {
+    margin: 0 0 12px;
+    color: var(--color-neutral-strong);
+    font-size: clamp(18px, 2.2vw, 24px);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+  }
+
+  .item-desc {
+    margin: 0 0 14px;
+    color: var(--color-neutral-muted);
+    font-size: 14px;
+    line-height: 1.75;
+    font-style: italic;
+  }
+
+  .item-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    justify-content: flex-end;
+  }
+
+  .timeline-item.even .item-links { justify-content: flex-start; }
+
+  .item-link {
+    font-size: 13px;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .item-link:hover { opacity: 0.7; }
+
+  .item-type {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid;
+    border-radius: 99px;
+    padding: 3px 10px;
+  }
+
+  /* ── Dot ── */
+  .item-dot-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .item-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+
+  .timeline-item:hover .item-dot { transform: scale(1.5); }
+
+  /* ── Image ── */
+  .item-image {
+    padding: 0 0 0 32px;
+    animation: slideRight 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .timeline-item.even .item-image {
+    padding: 0 32px 0 0;
+    animation: slideLeft 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .item-image img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+    border: 1px solid var(--color-border-subtle);
+    transition: transform 0.3s ease, box-shadow 0.3s;
+  }
+
+  .timeline-item:hover .item-image img {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+  }
+
+  .img-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border-radius: 16px;
+    border: 1px solid var(--color-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 700px) {
+    .timeline-line { left: 20px; }
+
+    .timeline-item,
+    .timeline-item.even {
+      grid-template-columns: 40px 1fr;
+      grid-template-rows: auto auto;
+      margin-bottom: 48px;
+    }
+
+    .timeline-item .item-dot-wrap,
+    .timeline-item.even .item-dot-wrap { order: 1; align-self: start; padding-top: 4px; }
+
+    .timeline-item .item-text,
+    .timeline-item.even .item-text {
+      order: 2; text-align: left; padding: 0 0 14px 0;
+    }
+
+    .timeline-item .item-links,
+    .timeline-item.even .item-links { justify-content: flex-start; }
+
+    .timeline-item .item-image,
+    .timeline-item.even .item-image {
+      order: 3; grid-column: 2; padding: 0;
+    }
   }
 </style>

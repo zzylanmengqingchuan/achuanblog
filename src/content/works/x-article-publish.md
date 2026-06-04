@@ -6,6 +6,7 @@ date: 2026-05-29
 tags: ["X", "插件", "内容发布", "自动化"]
 repo: "https://github.com/zzylanmengqingchuan/x-article-publish"
 featured: true
+cover: "/covers/31.png"
 ---
 
 围绕内容发布流程中的实际痛点构建的小工具。

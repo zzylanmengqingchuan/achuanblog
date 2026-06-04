@@ -1,34 +1,573 @@
 ---
 import { getCollection } from "astro:content";
-import PageLayout from "../layouts/PageLayout.astro";
-import WorkCard from "../components/content/WorkCard.astro";
-import ToolsSection from "../components/sections/ToolsSection.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { recommendedTools } from "../data/tools";
 
-const works = (await getCollection("works")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allWorks = (await getCollection("works")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const projects = allWorks.filter(w => w.data.type === "GitHub 项目");
+const articles = allWorks.filter(w => w.data.type === "文章");
+const tools    = allWorks.filter(w => w.data.type === "小工具");
+
+const toolIcons: Record<string, string> = {
+  "Cola":            "bubble",
+  "Typeless":        "mic",
+  "Note2MP":         "publish",
+  "Typora":          "edit_note",
+  "Obsidian":        "hub",
+  "Readwise Reader": "menu_book",
+};
 ---
 
-<PageLayout
-  title="作品集"
-  eyebrow="Works"
-  description="一些正在积累的开源项目、小工具和文章作品。"
->
-  <section class="container grid">
-    {works.map((work) => <WorkCard work={work} />)}
+<BaseLayout title="作品集" description="一些正在积累的开源项目、小工具和内容创作作品。">
+
+  <!-- 进度条 -->
+  <div class="progress-bar" id="progress-bar"></div>
+
+  <!-- ── Hero ── -->
+  <section class="hero-section container">
+    <div class="hero-inner">
+      <h1 class="hero-title">构建有意思的东西</h1>
+      <p class="hero-sub">
+        围绕 AI Agent、知识管理和内容创作，持续沉淀开源项目、写作工具链和 AI 实践记录。
+      </p>
+      <div class="hero-tags">
+        <span class="hero-tag">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          开发者
+        </span>
+        <span class="hero-tag">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          创作者
+        </span>
+      </div>
+    </div>
   </section>
-  <ToolsSection />
-</PageLayout>
+
+  <!-- ── GitHub 项目网格 ── -->
+  <section class="projects-section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow">Case Studies</p>
+          <h2 class="section-title">开源项目</h2>
+        </div>
+        <a href="https://github.com/zzylanmengqingchuan" target="_blank" rel="noopener" class="view-all">
+          查看全部 →
+        </a>
+      </div>
+
+      <div class="projects-grid">
+        {projects.map((work) => (
+          <div class="project-card">
+            <div class="card-img-wrap">
+              {work.data.cover
+                ? <img src={work.data.cover} alt={work.data.title} loading="lazy" />
+                : <div class="card-img-placeholder"></div>
+              }
+            </div>
+            <div class="card-body">
+              <div class="card-tags">
+                {work.data.tags.slice(0, 2).map(t => <span class="card-tag">{t}</span>)}
+              </div>
+              <h3 class="card-title">{work.data.title}</h3>
+              <p class="card-desc">{work.data.description}</p>
+              {work.data.repo && (
+                <a href={work.data.repo} target="_blank" rel="noopener" class="card-link">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                  Repository
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 推荐工具 Bento ── -->
+  <section class="tools-section">
+    <div class="container">
+      <div class="tools-inner">
+        <!-- 左侧文字 -->
+        <div class="tools-left">
+          <p class="section-eyebrow">The Stack</p>
+          <h2 class="section-title">推荐工具</h2>
+          <p class="tools-desc">持续使用、体验和记录的工具，覆盖 AI Agent、写作、知识管理和内容发布。</p>
+          <ul class="tools-list">
+            {[...projects.slice(0,2), ...tools].map(w => (
+              <li>
+                <span class="dot"></span>
+                {w.data.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <!-- 右侧 2×3 grid -->
+        <div class="tools-right">
+          {recommendedTools.map(tool => (
+            <div class="tool-card">
+              <div class="tool-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  {tool.name === "Cola"           && <><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></>}
+                  {tool.name === "Typeless"       && <><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3M8 22h8"/></>}
+                  {tool.name === "Note2MP"        && <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></>}
+                  {tool.name === "Typora"         && <><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></>}
+                  {tool.name === "Obsidian"       && <><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></>}
+                  {tool.name === "Readwise Reader" && <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>}
+                </svg>
+              </div>
+              <div>
+                <h4 class="tool-name">{tool.name}</h4>
+                <span class="tool-type">{tool.type}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 写作作品 Chronicle ── -->
+  <section class="chronicle-section">
+    <div class="chronicle-inner container">
+      <div class="chronicle-head">
+        <p class="section-eyebrow">Chronicle</p>
+        <h2 class="section-title">写作与内容创作</h2>
+      </div>
+
+      <div class="chronicle-list">
+        {articles.map((work, i) => (
+          <article class:list={["chronicle-item", { active: i === 0 }]}>
+            <span class="chron-eyebrow">内容创作</span>
+            <h3 class="chron-title">{work.data.title}</h3>
+            <p class="chron-desc">{work.data.description}</p>
+          </article>
+        ))}
+        {tools.map((work) => (
+          <article class="chronicle-item">
+            <span class="chron-eyebrow">工作流</span>
+            <h3 class="chron-title">{work.data.title}</h3>
+            <p class="chron-desc">{work.data.description}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="chronicle-cta">
+        <div>
+          <h4>想看完整的文章记录？</h4>
+          <p>所有 AI 工具体验、写作心得和实践记录都在文章页面。</p>
+        </div>
+        <a href="/articles" class="cta-btn">查看文章</a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    const bar = document.getElementById('progress-bar');
+    if (bar) bar.style.width = pct + '%';
+  });
+</script>
 
 <style>
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-    padding: 0 0 96px;
+  /* ── Progress bar ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--color-primary);
+    z-index: 200;
+    width: 0;
+    transition: width 0.1s linear;
   }
 
-  @media (max-width: 920px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
+  /* ── Hero ── */
+  .hero-section { padding: 80px 0 64px; }
+
+  .hero-inner { max-width: 680px; }
+
+  .hero-title {
+    margin: 0 0 18px;
+    color: var(--color-neutral-strong);
+    font-size: clamp(36px, 6vw, 60px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+  }
+
+  .hero-sub {
+    margin: 0 0 24px;
+    color: var(--color-neutral-muted);
+    font-size: 17px;
+    line-height: 1.75;
+    max-width: 540px;
+  }
+
+  .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── Section commons ── */
+  .section-eyebrow {
+    margin: 0 0 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    opacity: 0.8;
+  }
+
+  .section-title {
+    margin: 0;
+    color: var(--color-neutral-strong);
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  /* ── Projects ── */
+  .projects-section {
+    padding: 64px 0;
+    background: var(--color-surface-muted);
+    border-top: 1px solid var(--color-border-subtle);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .view-all {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+
+  .view-all:hover { opacity: 1; }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .project-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s, border-color 0.25s;
+  }
+
+  .project-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-border-strong);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  }
+
+  .card-img-wrap {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: var(--color-surface-muted);
+  }
+
+  .card-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .project-card:hover .card-img-wrap img { transform: scale(1.05); }
+
+  .card-img-placeholder {
+    width: 100%; height: 100%;
+    background: var(--color-surface-muted);
+  }
+
+  .card-body { padding: 18px 20px; }
+
+  .card-tags { display: flex; gap: 6px; margin-bottom: 10px; }
+
+  .card-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  .card-title {
+    margin: 0 0 8px;
+    color: var(--color-neutral-strong);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .card-desc {
+    margin: 0 0 14px;
+    color: var(--color-neutral-muted);
+    font-size: 13px;
+    line-height: 1.65;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-neutral-strong);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .project-card:hover .card-link { color: var(--color-primary); }
+
+  /* ── Tools ── */
+  .tools-section {
+    padding: 72px 0;
+  }
+
+  .tools-inner {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .tools-desc {
+    margin: 16px 0 20px;
+    color: var(--color-neutral-muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .tools-list {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tools-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--color-neutral);
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .tools-right {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .tool-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .tool-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 16px rgba(100,117,255,0.08);
+  }
+
+  .tool-icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: var(--color-surface-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .tool-card:hover .tool-icon-wrap {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .tool-name {
+    margin: 0 0 2px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-neutral-strong);
+    line-height: 1.3;
+  }
+
+  .tool-type {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-neutral-muted);
+  }
+
+  /* ── Chronicle ── */
+  .chronicle-section {
+    padding: 72px 0 0;
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-surface-muted);
+  }
+
+  .chronicle-inner { padding-bottom: 0; }
+
+  .chronicle-head {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .chronicle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 40px;
+  }
+
+  .chronicle-item {
+    padding: 20px 20px 20px 24px;
+    border-left: 3px solid var(--color-border-strong);
+    background: var(--color-surface);
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    border-radius: 0 12px 12px 0;
+  }
+
+  .chronicle-item.active {
+    border-left-color: var(--color-primary);
+  }
+
+  .chronicle-item:hover {
+    border-left-color: var(--color-primary);
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  .chron-eyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-neutral-muted);
+    margin-bottom: 6px;
+  }
+
+  .chron-title {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-neutral-strong);
+    line-height: 1.4;
+  }
+
+  .chron-desc {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-neutral-muted);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* CTA Banner */
+  .chronicle-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 32px 36px;
+    background: var(--color-neutral-strong);
+    border-radius: 0;
+    margin: 0 calc(-1 * (100vw - 100%) / 2);
+  }
+
+  .chronicle-cta h4 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+  }
+
+  .chronicle-cta p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .cta-btn {
+    flex-shrink: 0;
+    padding: 12px 28px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .projects-grid { grid-template-columns: repeat(2, 1fr); }
+    .tools-inner { grid-template-columns: 1fr; gap: 32px; }
+    .tools-right { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .projects-grid { grid-template-columns: 1fr; }
+    .tools-right { grid-template-columns: 1fr; }
+    .chronicle-cta { flex-direction: column; align-items: flex-start; }
   }
 </style>

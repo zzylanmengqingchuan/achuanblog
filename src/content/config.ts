@@ -40,7 +40,8 @@ const experience = defineCollection({
     type: z.enum(["教育经历", "工作经历", "其他"]),
     description: z.string(),
     links: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
-    order: z.number()
+    order: z.number(),
+    cover: z.string().optional()
   })
 });
 
@@ -53,7 +54,8 @@ const growth = defineCollection({
     summary: z.string(),
     theme: z.enum(["写作", "AI", "学习", "创作", "其他"]),
     order: z.number(),
-    featured: z.boolean().default(false)
+    featured: z.boolean().default(false),
+    cover: z.string().optional()
   })
 });
 
