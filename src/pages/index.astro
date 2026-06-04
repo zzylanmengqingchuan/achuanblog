@@ -10,36 +10,46 @@ const articles = (await getCollection("articles"))
 const works = (await getCollection("works"))
   .filter((w) => w.data.featured)
   .slice(0, 4);
+
+const navTags = [
+  { label: "了解我", href: "/about" },
+  { label: "查看作品", href: "/works" },
+  { label: "读文章", href: "/articles" },
+  { label: "成长路径", href: "/growth" },
+  { label: "联系我", href: "/contact" },
+];
 ---
 
 <BaseLayout>
+  <!-- Background orbs -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
   <div class="home">
 
     <!-- Avatar -->
-    <div class="avatar-wrap">
+    <div class="avatar-wrap anim-avatar">
+      <div class="avatar-ring"></div>
       <img src="/logo.jpg" alt="阑梦清川" class="avatar" />
     </div>
 
     <!-- Profile Card -->
-    <div class="profile-card">
+    <div class="profile-card anim-card-1">
       <div class="profile-top">
-        <div class="profile-text">
-          <p class="greeting">Hi, 我是</p>
-          <h1 class="name">阑梦清川</h1>
-          <p class="role">AI Agent 深度用户 · 内容创作者</p>
-        </div>
+        <p class="greeting">Hi, 我是</p>
+        <h1 class="name">阑梦清川</h1>
+        <p class="role">AI Agent 深度用户 · 内容创作者</p>
       </div>
 
-      <!-- Quick nav tags -->
       <div class="quick-nav">
-        <a href="/about" class="tag">了解我</a>
-        <a href="/works" class="tag">查看作品</a>
-        <a href="/articles" class="tag">读文章</a>
-        <a href="/growth" class="tag">成长路径</a>
-        <a href="/contact" class="tag">联系我</a>
+        {navTags.map((item, i) => (
+          <a href={item.href} class="tag" style={`--i:${i}`}>{item.label}</a>
+        ))}
       </div>
 
-      <!-- Social links -->
       <div class="social-row">
         <a href="https://github.com/zzylanmengqingchuan" target="_blank" rel="noopener" class="social-link" title="GitHub">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
@@ -59,8 +69,7 @@ const works = (await getCollection("works"))
     <!-- Info cards -->
     <div class="cards-grid">
 
-      <!-- Recent Articles -->
-      <div class="info-card">
+      <div class="info-card anim-card-2">
         <div class="card-header">
           <span class="card-label">最新文章</span>
           <a href="/articles" class="card-more">全部 →</a>
@@ -68,7 +77,7 @@ const works = (await getCollection("works"))
         <ul class="article-list">
           {articles.map((a) => (
             <li>
-              <a href={`/articles/${a.id}`} class="article-item">
+              <a href={`/articles/${a.slug}`} class="article-item">
                 <span class="article-title">{a.data.title}</span>
                 <span class="article-date">{a.data.date.toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" })}</span>
               </a>
@@ -77,8 +86,7 @@ const works = (await getCollection("works"))
         </ul>
       </div>
 
-      <!-- Works -->
-      <div class="info-card">
+      <div class="info-card anim-card-3">
         <div class="card-header">
           <span class="card-label">作品精选</span>
           <a href="/works" class="card-more">全部 →</a>
@@ -105,37 +113,158 @@ const works = (await getCollection("works"))
 </BaseLayout>
 
 <style>
+  /* ── Background orbs ── */
+  .bg-orbs {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.18;
+    animation: orbFloat linear infinite;
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, #4258ff, transparent 70%);
+    top: -120px;
+    left: -100px;
+    animation-duration: 20s;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #7c3aed, transparent 70%);
+    bottom: 10%;
+    right: -80px;
+    animation-duration: 25s;
+    animation-delay: -8s;
+  }
+
+  .orb-3 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #0ea5e9, transparent 70%);
+    top: 50%;
+    left: 60%;
+    animation-duration: 18s;
+    animation-delay: -4s;
+  }
+
+  @keyframes orbFloat {
+    0%   { transform: translate(0, 0) scale(1); }
+    33%  { transform: translate(30px, -40px) scale(1.05); }
+    66%  { transform: translate(-20px, 20px) scale(0.97); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+
+  /* ── Layout ── */
   .home {
-    width: min(100% - 40px, var(--layout-home-max));
+    position: relative;
+    z-index: 1;
+    width: min(100% - 40px, 640px);
     margin-inline: auto;
     padding: 56px 0 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0;
   }
 
-  /* Avatar */
+  /* ── Entrance animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.88); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .anim-avatar {
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .anim-card-1 {
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+  }
+
+  .anim-card-2 {
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+  }
+
+  .anim-card-3 {
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
+  }
+
+  /* ── Avatar ── */
   .avatar-wrap {
-    margin-bottom: 20px;
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  @keyframes avatarFloat {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-6px); }
   }
 
   .avatar {
-    width: 80px;
-    height: 80px;
+    width: 84px;
+    height: 84px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--color-border-strong);
+    border: 2px solid rgba(255,255,255,0.12);
+    position: relative;
+    z-index: 1;
+    animation: avatarFloat 4s ease-in-out infinite;
   }
 
-  /* Profile Card */
+  .avatar-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #4258ff, #7c3aed, #0ea5e9, #4258ff);
+    opacity: 0.5;
+    animation: ringRotate 4s linear infinite;
+    z-index: 0;
+  }
+
+  @keyframes ringRotate {
+    to { transform: rotate(360deg); }
+  }
+
+  .avatar-ring::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--color-page-background);
+  }
+
+  /* ── Profile Card ── */
   .profile-card {
     width: 100%;
-    background: var(--color-surface);
+    background: rgba(22, 27, 34, 0.72);
     border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-lg);
+    border-radius: 20px;
     padding: 28px 28px 24px;
-    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: box-shadow 0.3s, border-color 0.3s;
+  }
+
+  .profile-card:hover {
+    border-color: rgba(66, 88, 255, 0.3);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(66,88,255,0.12), inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
   .greeting {
@@ -146,9 +275,12 @@ const works = (await getCollection("works"))
 
   .name {
     margin: 0 0 8px;
-    color: var(--color-primary);
-    font-size: 32px;
-    font-weight: 600;
+    background: linear-gradient(135deg, #6475ff, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 34px;
+    font-weight: 700;
     letter-spacing: -0.5px;
   }
 
@@ -158,6 +290,7 @@ const works = (await getCollection("works"))
     font-size: 15px;
   }
 
+  /* ── Quick Nav Tags ── */
   .quick-nav {
     display: flex;
     flex-wrap: wrap;
@@ -168,19 +301,36 @@ const works = (await getCollection("works"))
   .tag {
     border: 1px solid var(--color-border-strong);
     border-radius: 99px;
-    padding: 5px 14px;
+    padding: 6px 16px;
     color: var(--color-neutral-muted);
     font-size: 13px;
     text-decoration: none;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) calc(0.35s + var(--i) * 0.06s) both;
+  }
+
+  .tag::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(66,88,255,0.15), rgba(124,58,237,0.1));
+    opacity: 0;
+    transition: opacity 0.2s;
   }
 
   .tag:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-    background: var(--color-primary-soft);
+    border-color: rgba(100, 117, 255, 0.6);
+    color: #a5b4fc;
+    box-shadow: 0 0 12px rgba(66, 88, 255, 0.2);
   }
 
+  .tag:hover::before {
+    opacity: 1;
+  }
+
+  /* ── Social ── */
   .social-row {
     display: flex;
     gap: 4px;
@@ -193,20 +343,21 @@ const works = (await getCollection("works"))
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
     color: var(--color-neutral-muted);
     text-decoration: none;
-    transition: color 0.15s, background 0.15s;
+    transition: color 0.2s, background 0.2s, transform 0.2s;
   }
 
   .social-link:hover {
     color: var(--color-neutral-strong);
-    background: var(--color-surface-muted);
+    background: rgba(255,255,255,0.06);
+    transform: translateY(-2px);
   }
 
-  /* Cards grid */
+  /* ── Cards Grid ── */
   .cards-grid {
     width: 100%;
     display: grid;
@@ -216,11 +367,19 @@ const works = (await getCollection("works"))
   }
 
   .info-card {
-    background: var(--color-surface);
+    background: rgba(22, 27, 34, 0.72);
     border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-lg);
+    border-radius: 20px;
     padding: 20px;
-    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+
+  .info-card:hover {
+    border-color: rgba(66, 88, 255, 0.24);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(66,88,255,0.08);
+    transform: translateY(-3px);
   }
 
   .card-header {
@@ -231,10 +390,10 @@ const works = (await getCollection("works"))
   }
 
   .card-label {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--color-neutral-muted);
   }
 
@@ -242,22 +401,19 @@ const works = (await getCollection("works"))
     font-size: 12px;
     color: var(--color-primary);
     text-decoration: none;
-    opacity: 0.8;
+    opacity: 0.7;
     transition: opacity 0.15s;
   }
 
-  .card-more:hover {
-    opacity: 1;
-  }
+  .card-more:hover { opacity: 1; }
 
-  /* Article list */
+  /* ── Article list ── */
   .article-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
   }
 
   .article-item {
@@ -265,10 +421,10 @@ const works = (await getCollection("works"))
     align-items: baseline;
     justify-content: space-between;
     gap: 8px;
-    padding: 7px 0;
+    padding: 8px 0;
     border-bottom: 1px solid var(--color-border-subtle);
     text-decoration: none;
-    transition: color 0.15s;
+    transition: padding-left 0.2s;
   }
 
   .article-list li:last-child .article-item {
@@ -284,19 +440,24 @@ const works = (await getCollection("works"))
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    transition: color 0.15s;
+  }
+
+  .article-item:hover {
+    padding-left: 4px;
   }
 
   .article-item:hover .article-title {
-    color: var(--color-primary);
+    color: #a5b4fc;
   }
 
   .article-date {
     color: var(--color-neutral-muted);
-    font-size: 12px;
+    font-size: 11px;
     flex-shrink: 0;
   }
 
-  /* Works list */
+  /* ── Works list ── */
   .works-list {
     list-style: none;
     margin: 0;
@@ -350,13 +511,9 @@ const works = (await getCollection("works"))
     font-size: 11px;
   }
 
+  /* ── Responsive ── */
   @media (max-width: 560px) {
-    .cards-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .name {
-      font-size: 26px;
-    }
+    .cards-grid { grid-template-columns: 1fr; }
+    .name { font-size: 28px; }
   }
 </style>

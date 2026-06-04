@@ -11,7 +11,7 @@ const articles = defineCollection({
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),
-    cover: z.string().url().optional()
+    cover: z.string().optional()
   })
 });
 
@@ -26,7 +26,7 @@ const works = defineCollection({
     url: z.string().url().optional(),
     repo: z.string().url().optional(),
     featured: z.boolean().default(false),
-    cover: z.string().url().optional()
+    cover: z.string().optional()
   })
 });
 

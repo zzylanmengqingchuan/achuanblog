@@ -6,6 +6,7 @@ category: "其他"
 tags: ["成长路径", "求学经历", "写作", "个人叙事"]
 draft: false
 featured: true
+cover: "/covers/2.png"
 ---
 
 大家好，我是阑梦清川；

@@ -6,6 +6,7 @@ category: "AI 实践案例"
 tags: ["Obsidian", "Typora", "写作工作流", "内容创作"]
 draft: false
 featured: true
+cover: "/covers/1.png"
 ---
 
 大家好，我是阑梦清川，一个非正经的计算机专业的学生，兼业余写作爱好者
