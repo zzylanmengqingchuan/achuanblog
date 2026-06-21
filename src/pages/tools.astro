@@ -1,0 +1,187 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { recommendedTools } from "../data/tools";
+---
+
+<BaseLayout title="推荐工具" description="持续使用、体验和记录的工具，覆盖 AI Agent、写作、知识管理和内容发布。">
+
+  <div class="page-head container">
+    <p class="eyebrow">The Stack</p>
+    <h1>推荐工具</h1>
+    <p class="sub">持续使用、体验和记录的工具，覆盖 AI Agent、写作、知识管理和内容发布。</p>
+  </div>
+
+  <div class="tools-grid container">
+    {recommendedTools.map(tool => (
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              {tool.name === "Cola"            && <><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></>}
+              {tool.name === "Typeless"        && <><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3M8 22h8"/></>}
+              {tool.name === "Note2MP"         && <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></>}
+              {tool.name === "Typora"          && <><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></>}
+              {tool.name === "Obsidian"        && <><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></>}
+              {tool.name === "Readwise Reader" && <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>}
+            </svg>
+          </div>
+          <div>
+            <h2 class="tool-name">{tool.name}</h2>
+            <span class="tool-type">{tool.type}</span>
+          </div>
+        </div>
+
+        <p class="tool-desc">{tool.description}</p>
+
+        {tool.note && <p class="tool-note">{tool.note}</p>}
+
+        {tool.links.length > 0 && (
+          <div class="tool-links">
+            {tool.links.map(l => (
+              <a href={l.href} target="_blank" rel="noopener" class="tool-link">
+                {l.label} →
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding: 64px 0 48px;
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: var(--color-primary);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0 0 14px;
+    color: var(--color-neutral-strong);
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+
+  .sub {
+    margin: 0;
+    color: var(--color-neutral-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding-bottom: 96px;
+  }
+
+  .tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+
+  .tool-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 24px rgba(100,117,255,0.08);
+    transform: translateY(-2px);
+  }
+
+  .tool-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .tool-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--color-surface-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .tool-card:hover .tool-icon {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .tool-name {
+    margin: 0 0 4px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-neutral-strong);
+    line-height: 1.2;
+  }
+
+  .tool-type {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-neutral-muted);
+  }
+
+  .tool-desc {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-neutral-muted);
+    line-height: 1.75;
+    flex: 1;
+  }
+
+  .tool-note {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+
+  .tool-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  .tool-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .tool-link:hover { opacity: 0.7; }
+
+  @media (max-width: 900px) {
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .tools-grid { grid-template-columns: 1fr; }
+  }
+</style>
